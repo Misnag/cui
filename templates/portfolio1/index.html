@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h1>条件を入力</h1>
+    <form action="/search" method="POST">
+      Meal: 
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="meal" value="100" checked>
+        <label class="form-check-label" >すべて</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="meal" value="0">
+        <label class="form-check-label" >和</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="meal" value="1">
+        <label class="form-check-label" >洋</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="meal" value="2">
+        <label class="form-check-label" >中華</label>
+      </div>
+      Address:
+      <input type="text" id="address" name="address" placeholder="場所を入力してください">
+      <input type="submit" value="Search">
+    </form>
+
+    <!--ルーレットを描画-->
+    <div id="pointer">▼</div>
+    <div class="rotate">
+      {% for item in meal['1'] %}
+      <div class="roulette" id="roulette{{ loop.index }}"><span>{{ item }}</span></div>
+      {% endfor %}
+    </div>
+    
+    <input type="submit" value="Stop" id="stop">
+    <script>
+      const animation = document.querySelector(".rotate");
+      const Stop = document.getElementById("stop");
+      Stop.addEventListener("click", () => {
+        animation.classList.add("paused");});
+    </script>
+
+
+  <a href="{{ url_for('memberpage') }}">マイページ</a>
+</div>
+{% endblock %}

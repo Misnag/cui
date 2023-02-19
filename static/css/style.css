@@ -1,0 +1,87 @@
+#pointer {
+  text-align: center;
+  color: #a9a9a9;
+  font-size: xx-large;
+  font-weight: bold;
+}
+.rotate {
+  height: 400px;
+  width: 400px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff9e9e 0 45deg,
+    #ffce9e 45deg 90deg,
+    #ffff9e 90deg 135deg,
+    #9eff9e 135deg 180deg,
+    #9effff 180deg 225deg,
+    #9eceff 225deg 270deg,
+    #ce9eff 270deg 315deg,
+    #ff9eff 315deg 360deg
+  );
+  animation: rotate_anime 0.5s linear infinite;
+}
+.roulette{
+  height: 100%;
+  left: 50%;
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 400px;
+  display: inline-block;
+  position: absolute;
+  transform-origin: center;
+}
+
+.roulette span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  writing-mode: vertical-rl;
+}
+#roulette4 span,
+#roulette5 span,
+#roulette6 span,
+#roulette7 span,
+#roulette8 span {
+  writing-mode: vertical-lr;
+}
+
+#roulette1 {
+  transform: rotate(22.5deg) translateX(-50%);
+}
+#roulette2 {
+  transform: rotate(67.5deg) translateX(-50%);
+}
+#roulette3 {
+  transform: rotate(22.5deg) translateX(-50%);
+}
+#roulette4 {
+  transform: rotate(112.5deg) translateX(-50%);
+}
+#roulette5 {
+  transform: rotate(157.5deg) translateX(-50%);
+}
+#roulette6 {
+  transform: rotate(202.5deg) translateX(-50%);
+}
+#roulette7 {
+  transform: rotate(247.5deg) translateX(-50%);
+}
+#roulette8 {
+  transform: rotate(292.5deg) translateX(-50%);
+}
+
+@keyframes rotate_anime {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.paused {
+  animation-play-state: paused;
+}
