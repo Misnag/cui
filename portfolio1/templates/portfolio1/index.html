@@ -27,18 +27,60 @@
 
     <!--ルーレットを描画-->
     <div id="pointer">▼</div>
-    <div class="rotate">
+    <div class="rotate paused">
       {% for item in meal['1'] %}
-      <div class="roulette" id="roulette{{ loop.index }}"><span>{{ item }}</span></div>
+      <div class="roulette" id="roulette{{ loop.index }}">
+        <span>{{ item }}</span>
+      </div>
       {% endfor %}
     </div>
     
     <input type="submit" value="Stop" id="stop">
     <script>
+      const data = eval('{{ meal["1"] }}'.replaceAll('&#39;', "'"))
       const animation = document.querySelector(".rotate");
       const Stop = document.getElementById("stop");
       Stop.addEventListener("click", () => {
-        animation.classList.add("paused");});
+        if (!animation.classList.contains('paused')) {
+          animation.classList.add("paused");
+          let angle = getRotate(animation)
+          console.log(angle)
+          let selectedData
+          data.forEach((item, index) => {
+            let startAngle = index * 360 / data.length
+            let endAngle = (index + 1) * 360 / data.length
+
+            if (angle >= startAngle && angle <= endAngle ) {
+              selectedData = item
+            }
+          })
+          console.log(selectedData)
+        } else {
+          animation.classList.remove("paused");
+        }
+      });
+
+      data.forEach((item, index) => {
+        let itemAngle = 360 - (index * 360 / data.length + (360 / data.length / 2))
+        let rouletteEle = document.getElementById(`roulette${(index + 1)}`)
+        rouletteEle.style.transform = `rotate(${itemAngle}deg) translateX(-50%)`
+      })
+
+      
+      var getRotate = function(el) {
+        var tm = getComputedStyle(el, null).getPropertyValue("transform")
+        if (tm != "none") {
+          var values = tm.split('(')[1].split(')')[0].split(',');
+          /*
+          a = values[0];
+          b = values[1];
+          angle = Math.round(Math.atan2(b,a) * (180/Math.PI));
+          */
+          //return Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI)); //this would return negative values the OP doesn't wants so it got commented and the next lines of code added
+          var angle = Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI));
+          return (angle < 0 ? angle + 360 : angle); //adding 360 degrees here when angle < 0 is equivalent to adding (2 * Math.PI) radians before
+        }
+      }
     </script>
 
 

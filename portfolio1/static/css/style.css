@@ -26,17 +26,12 @@
   left: 50%;
   text-align: center;
   font-size: 1.5rem;
-  line-height: 400px;
   display: inline-block;
   position: absolute;
-  transform-origin: center;
+  transform-origin: 0 200px;
 }
 
 .roulette span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-size: 20px;
   writing-mode: vertical-rl;
 }
