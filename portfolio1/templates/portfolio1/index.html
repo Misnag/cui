@@ -62,7 +62,7 @@
 
           const animation = document.querySelector(".rotate");
           const Stop = document.getElementById("stop");
-          Stop.addEventListener("click", () => {
+          Stop.onclick = () => {
             if (!animation.classList.contains('paused')) {
               animation.classList.add("paused");
               let angle = getRotate(animation)
@@ -80,7 +80,7 @@
             } else {
               animation.classList.remove("paused");
             }
-          });
+          }
 
           data.forEach((item, index) => {
             let itemAngle = 360 - (index * 360 / data.length + (360 / data.length / 2))
