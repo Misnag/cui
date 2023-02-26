@@ -65,18 +65,21 @@
           Stop.onclick = () => {
             if (!animation.classList.contains('paused')) {
               animation.classList.add("paused");
-              let angle = getRotate(animation)
-              console.log(angle)
-              let selectedData
-              data.forEach((item, index) => {
-                let startAngle = index * 360 / data.length
-                let endAngle = (index + 1) * 360 / data.length
+              let timer = setTimeout(() => {
+                let angle = getRotate(animation)
+                console.log(angle)
+                let selectedData
+                data.forEach((item, index) => {
+                  let startAngle = index * 360 / data.length
+                  let endAngle = (index + 1) * 360 / data.length
 
-                if (angle >= startAngle && angle <= endAngle ) {
-                  selectedData = item
-                }
-              })
-              console.log(selectedData)
+                  if (angle >= startAngle && angle <= endAngle ) {
+                    selectedData = item
+                    return
+                  }
+                })
+                console.log(selectedData)
+              }, 50)
             } else {
               animation.classList.remove("paused");
             }
@@ -88,22 +91,24 @@
             rouletteEle.style.transform = `rotate(${itemAngle}deg) translateX(-50%)`
           })
           
-          var getRotate = function(el) {
-            var tm = getComputedStyle(el, null).getPropertyValue("transform")
-            if (tm != "none") {
-              var values = tm.split('(')[1].split(')')[0].split(',');
-              /*
-              a = values[0];
-              b = values[1];
-              angle = Math.round(Math.atan2(b,a) * (180/Math.PI));
-              */
-              //return Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI)); //this would return negative values the OP doesn't wants so it got commented and the next lines of code added
-              var angle = Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI));
-              return (angle < 0 ? angle + 360 : angle); //adding 360 degrees here when angle < 0 is equivalent to adding (2 * Math.PI) radians before
-            }
-          }
+          
         });
-    });
+        
+      });
+      var getRotate = function(el) {
+        var tm = getComputedStyle(el, null).getPropertyValue("transform")
+        if (tm != "none") {
+          var values = tm.split('(')[1].split(')')[0].split(',');
+          /*
+          a = values[0];
+          b = values[1];
+          angle = Math.round(Math.atan2(b,a) * (180/Math.PI));
+          */
+          //return Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI)); //this would return negative values the OP doesn't wants so it got commented and the next lines of code added
+          var angle = Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI));
+          return (angle < 0 ? angle + 360 : angle); //adding 360 degrees here when angle < 0 is equivalent to adding (2 * Math.PI) radians before
+        }
+      }
     </script>
 
   <a href="{{ url_for('memberpage') }}">マイページ</a>
