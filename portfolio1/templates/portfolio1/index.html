@@ -27,62 +27,84 @@
 
     <!--ルーレットを描画-->
     <div id="pointer">▼</div>
-    <div class="rotate paused">
-      {% for item in meal['1'] %}
-      <div class="roulette" id="roulette{{ loop.index }}">
-        <span>{{ item }}</span>
-      </div>
-      {% endfor %}
-    </div>
-    
+    <div class="rotate paused" id="rotate"></div>
     <input type="submit" value="Stop" id="stop">
+
     <script>
-      const data = eval('{{ meal["1"] }}'.replaceAll('&#39;', "'"))
-      const animation = document.querySelector(".rotate");
-      const Stop = document.getElementById("stop");
-      Stop.addEventListener("click", () => {
-        if (!animation.classList.contains('paused')) {
-          animation.classList.add("paused");
-          let angle = getRotate(animation)
-          console.log(angle)
-          let selectedData
+      const formCheckInputs = document.querySelectorAll('.form-check-input');
+      formCheckInputs.forEach(function (formCheckInput) {
+        formCheckInput.addEventListener('change', function () {
+          const value = this.value;
+          const rotate = document.querySelector('.rotate');
+          let data;
+          if (value === "0") {
+            data= eval('{{ meal["0"] }}'.replaceAll('&#39;', "'"));
+            rotate.style.background = "conic-gradient(#ff9e9e 0 40deg, #ffce9e 40deg 80deg, #ffff9e 80deg 120deg, #9eff9e 120deg 160deg, #9effff 160deg 200deg, #9eceff 200deg 240deg, #9999ff 240deg 280deg, #ce9eff 280deg 320deg, #ff9eff 320deg 360deg)";       
+          } else if (value === "1") {
+            data= eval('{{ meal["1"] }}'.replaceAll('&#39;', "'"));
+            rotate.style.background = "conic-gradient(#ff9e9e 0 45deg, #ffce9e 45deg 90deg, #ffff9e 90deg 135deg, #9eff9e 135deg 180deg, #9effff 180deg 225deg, #9eceff 225deg 270deg, #ce9eff 270deg 315deg, #ff9eff 315deg 360deg)";
+          } else if (value === "2") {
+            data= eval('{{ meal["2"] }}'.replaceAll('&#39;', "'"));
+            rotate.style.background = "conic-gradient(#ff9e9e 0 72deg, #ffff9e 72deg 144deg, #9eff9e 144deg 216deg, #9eceff 216deg 288deg, #ff9eff 288deg 360deg)";
+          } else {
+            data= eval('{{ meal["100"] }}'.replaceAll('&#39;', "'"));
+            rotate.style.background = "conic-gradient(#ff9e9e 0 16.36deg, #ff9ece 16.36deg 32.72deg, #ff9eff 32.72deg 49.08deg, #ce9eff 49.08deg 65.44deg, #9e9eff 65.44deg 81.8deg, #9eceff 81.8deg 98.16deg, #9effff 98.16deg 114.52deg, #9effce 114.52deg 130.88deg, #ceff9e 130.88deg 147.24deg, #ffff9e 147.24deg 163.6deg, #ffce9e 163.6deg 179.96deg, #ff9e9e 179.96deg 196.32deg, #ff9ece 196.32deg 212.68deg, #ff9eff 212.68deg 229.04deg, #ce9eff 229.04deg 245.4deg, #9e9eff 245.4deg 261.76deg, #9eceff 261.76deg 278.12deg, #9effff 278.12deg 294.48deg, #9effce 294.48deg 310.84deg, #ceff9e 310.84deg 327.2deg, #ffff9e 327.2deg 343.56deg, #ffce9e 343.56deg 359.92deg)";
+          }
+
+          const container = document.querySelector('.rotate');
+          let html = '';
           data.forEach((item, index) => {
-            let startAngle = index * 360 / data.length
-            let endAngle = (index + 1) * 360 / data.length
+            const id = `roulette${index+1}`;
+            html += `<div class="roulette" id="${id}"><span>${item}</span></div>`;
+          });
 
-            if (angle >= startAngle && angle <= endAngle ) {
-              selectedData = item
+          container.innerHTML = html;
+
+          const animation = document.querySelector(".rotate");
+          const Stop = document.getElementById("stop");
+          Stop.addEventListener("click", () => {
+            if (!animation.classList.contains('paused')) {
+              animation.classList.add("paused");
+              let angle = getRotate(animation)
+              console.log(angle)
+              let selectedData
+              data.forEach((item, index) => {
+                let startAngle = index * 360 / data.length
+                let endAngle = (index + 1) * 360 / data.length
+
+                if (angle >= startAngle && angle <= endAngle ) {
+                  selectedData = item
+                }
+              })
+              console.log(selectedData)
+            } else {
+              animation.classList.remove("paused");
             }
+          });
+
+          data.forEach((item, index) => {
+            let itemAngle = 360 - (index * 360 / data.length + (360 / data.length / 2))
+            let rouletteEle = document.getElementById(`roulette${(index + 1)}`)
+            rouletteEle.style.transform = `rotate(${itemAngle}deg) translateX(-50%)`
           })
-          console.log(selectedData)
-        } else {
-          animation.classList.remove("paused");
-        }
-      });
-
-      data.forEach((item, index) => {
-        let itemAngle = 360 - (index * 360 / data.length + (360 / data.length / 2))
-        let rouletteEle = document.getElementById(`roulette${(index + 1)}`)
-        rouletteEle.style.transform = `rotate(${itemAngle}deg) translateX(-50%)`
-      })
-
-      
-      var getRotate = function(el) {
-        var tm = getComputedStyle(el, null).getPropertyValue("transform")
-        if (tm != "none") {
-          var values = tm.split('(')[1].split(')')[0].split(',');
-          /*
-          a = values[0];
-          b = values[1];
-          angle = Math.round(Math.atan2(b,a) * (180/Math.PI));
-          */
-          //return Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI)); //this would return negative values the OP doesn't wants so it got commented and the next lines of code added
-          var angle = Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI));
-          return (angle < 0 ? angle + 360 : angle); //adding 360 degrees here when angle < 0 is equivalent to adding (2 * Math.PI) radians before
-        }
-      }
+          
+          var getRotate = function(el) {
+            var tm = getComputedStyle(el, null).getPropertyValue("transform")
+            if (tm != "none") {
+              var values = tm.split('(')[1].split(')')[0].split(',');
+              /*
+              a = values[0];
+              b = values[1];
+              angle = Math.round(Math.atan2(b,a) * (180/Math.PI));
+              */
+              //return Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI)); //this would return negative values the OP doesn't wants so it got commented and the next lines of code added
+              var angle = Math.round(Math.atan2(values[1],values[0]) * (180/Math.PI));
+              return (angle < 0 ? angle + 360 : angle); //adding 360 degrees here when angle < 0 is equivalent to adding (2 * Math.PI) radians before
+            }
+          }
+        });
+    });
     </script>
-
 
   <a href="{{ url_for('memberpage') }}">マイページ</a>
 </div>

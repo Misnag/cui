@@ -4,7 +4,7 @@
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <div class="container mt-4">
   <h2>受け取った値</h2>
-  <p>お店：{{ result.random_meal }}</p>
+  <p>お店: {{ result.selected_meal }}</p>
   <p>住所：{{ result.address }}</p>
   <p id="transformValue"></p>
   
@@ -35,7 +35,7 @@
     });
 
     const request = {
-      query: "{{ result.random_meal }} {{ result.address }}", 
+      query: "{{ result.selected_meal }} {{ result.address }}", 
     };
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
     service = new google.maps.places.PlacesService(map);
