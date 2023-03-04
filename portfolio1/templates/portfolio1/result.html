@@ -1,69 +1,7 @@
 {% extends "layout.html" %}
-
 {% block content %}
-<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-<div class="container mt-4">
-  <h2>受け取った値</h2>
-  <p>お店: {{ result.selected_meal }}</p>
-  <p>住所：{{ result.address }}</p>
-  <p id="transformValue"></p>
-  
-  <div class="map-wrapper" style="width: 1200px; height: 600px;">
-    <div id="map" style="height: 100%;"></div>
-  </div>
-  <p>
-    <a href="{{ url_for('index') }}">戻る</a>
-  </p>
+<div class="container">
+  <p>You selected {{ selected_meal }}</p>
 </div>
-<style>
-  /* https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate */
-</style>
-<script>
-  let map;
-  let service;
-  let infowindow;
-  function initMap() {
-    let lat, lng
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      lat = pos.coords.latitude
-      lng = pos.coords.longitude
-    })
-    
-    map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat, lng },
-      zoom: 15,
-    });
-
-    const request = {
-      query: "{{ result.selected_meal }} {{ result.address }}", 
-    };
-    // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
-    service = new google.maps.places.PlacesService(map);
-    service.findPlaceFromQuery(request, (results, status) => {
-      console.log(results)
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        for (let i = 0; i < results.length; i++) {
-          createMarker(results[i]);
-        }
-
-        map.setCenter(results[0].geometry.location);
-      }
-    });
-  }
-  function createMarker(place) {
-    if (!place.geometry || !place.geometry.location) return;
-
-    const marker = new google.maps.Marker({
-      map,
-      position: place.geometry.location,
-    });
-
-    google.maps.event.addListener(marker, "click", () => {
-      infowindow.setContent(place.name || "");
-      infowindow.open(map);
-    });
-  }
-  window.initMap = initMap;
-</script>
-<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJTFpoFEy3IYJzfWOmtCFysBVL2yv3V6E&callback=initMap&libraries=places&v=weekly" defer></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 {% endblock %}

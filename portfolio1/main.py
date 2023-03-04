@@ -1,5 +1,6 @@
+from flask import app
 from portfolio1 import app
-from flask import render_template, request
+from flask import render_template, request, jsonify
 
 meal = {
     "0": ['日本料理','寿司','うどん','蕎麦','焼肉','しゃぶしゃぶ','海鮮','焼鳥','丼'],
@@ -15,16 +16,14 @@ def index():
     return render_template('portfolio1/index.html', meal=meal)
 
 # indexから条件取得
-@app.route('/stop', methods=['POST'])
-def stop():
-    data = request.json
-    selectedData = data.get('selectedData')
-    address = request.form['address']
-    result = {
-        'selected_meal': selectedData,
-        'address': address,
-    }
-    return render_template('portfolio1/result.html', result = result)
+
+@app.route('/result', methods=['POST'])
+def result():
+    data = request.get_json()
+    selected_meal = data.get('selectedData')
+    print(data)
+    return render_template('portfolio1/result.html', selected_meal=selected_meal)
+
 
 # マイページ(まだ)
 @app.route('/memberpage')
