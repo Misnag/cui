@@ -32,7 +32,10 @@
     <!--ルーレットを描画-->
     <div id="pointer">▼</div>
     <div class="rotate paused" id="rotate"></div>
-    <input type="submit" value="Stop" id="stop">
+    <form action="/result" method="POST" id="result-form">
+      <input type="hidden" name="selected-data" id="hide-selected-data">
+      <input type="button" value="Stop" id="stop">
+    </form>
 
     <script>
       const formCheckInputs = document.querySelectorAll('.form-check-input');
@@ -82,17 +85,23 @@
                   }
                 })
                 console.log(selectedData)
-                fetch("/result", {
-                  method: 'POST',
-                  headers: {"Content-Type": "application/json; charset=utf-8" },
-                  body: JSON.stringify({ selectedData: selectedData })
-                })
-                .then(response => {
-                  console.log(response);
-                })
-                .catch(error => {
-                  console.error("Error:", error);
-                });
+                const hideSelectedDataEle = document.querySelector('#hide-selected-data')
+                hideSelectedDataEle.value = selectedData
+
+                const resultForm = document.querySelector('#result-form')
+                resultForm.submit()
+                
+                // fetch("/result", {
+                //   method: 'POST',
+                //   headers: {"Content-Type": "application/json; charset=utf-8" },
+                //   body: JSON.stringify({ selectedData: selectedData })
+                // })
+                // .then(response => {
+                //   console.log(response);
+                // })
+                // .catch(error => {
+                //   console.error("Error:", error);
+                // });
 
 
               }, 50)

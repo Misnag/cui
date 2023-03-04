@@ -19,8 +19,8 @@ def index():
 
 @app.route('/result', methods=['POST'])
 def result():
-    data = request.get_json()
-    selected_meal = data.get('selectedData')
+    data = request.form
+    selected_meal = data['selected-data']
     print(data)
     return render_template('portfolio1/result.html', selected_meal=selected_meal)
 
