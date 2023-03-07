@@ -1,41 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="button_click_monitor.js"></script>
-<script src="js/post_fetch.js"></script>
 
 <div class="container mt-4">
-  <h1>条件を入力</h1>
-      Meal: 
-      <form action="/search"></form>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="meal" value="100">
-        <label class="form-check-label" >すべて</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="meal" value="0">
-        <label class="form-check-label" >和</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="meal" value="1">
-        <label class="form-check-label" >洋</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="meal" value="2">
-        <label class="form-check-label" >中華</label>
-      </div>
-      Address:
-      <input type="text" id="address" name="address" placeholder="場所を入力してください">
-      <input type="submit" value="検索">
-    </form>
+  料理のジャンルを選択してね
+    <fieldset>
+      <input id="100" class="form-check-input" type="radio" name="meal" value="100">
+        <label class="form-check-label" for="100">すべて</label>
+      <input id="0" class="form-check-input" type="radio" name="meal" value="0">
+        <label class="form-check-label" for="0">和</label>
+      <input id="1" class="form-check-input" type="radio" name="meal" value="1">
+        <label class="form-check-label" for="1">洋</label>
+      <input id="2" class="form-check-input" type="radio" name="meal" value="2">
+        <label class="form-check-label" for="2">中華</label>
+    </fieldset>
 
-    <!--ルーレットを描画-->
-    <div id="pointer">▼</div>
-    <div class="rotate paused" id="rotate"></div>
     <form action="/result" method="POST" id="result-form">
+      <input type="text" id="address" name="address" placeholder="場所を入力してください">
       <input type="hidden" name="selected-data" id="hide-selected-data">
       <input type="button" value="Stop" id="stop">
     </form>
+    
+    <!--ルーレットを描画-->
+    <div id="pointer">▼</div>
+    <div class="rotate paused" id="rotate"></div>
 
     <script>
       const formCheckInputs = document.querySelectorAll('.form-check-input');
@@ -46,16 +33,16 @@
           let data;
           if (value === "0") {
             data= eval('{{ meal["0"] }}'.replaceAll('&#39;', "'"));
-            rotate.style.background = "conic-gradient(#ff9e9e 0 40deg, #ffce9e 40deg 80deg, #ffff9e 80deg 120deg, #9eff9e 120deg 160deg, #9effff 160deg 200deg, #9eceff 200deg 240deg, #9999ff 240deg 280deg, #ce9eff 280deg 320deg, #ff9eff 320deg 360deg)";       
+            rotate.style.background = "conic-gradient(#F3E2CF 0 36deg, #C7B09B 36deg 72deg, #708B91 72deg 108deg, #576B79 108deg 144deg, #48556B 144deg 180deg, #F3E2CF 180deg 216deg, #C7B09B 216deg 252deg, #708B91 252deg 288deg, #576B79 288deg 324deg, #48556B 324deg 360deg)";
           } else if (value === "1") {
             data= eval('{{ meal["1"] }}'.replaceAll('&#39;', "'"));
-            rotate.style.background = "conic-gradient(#ff9e9e 0 45deg, #ffce9e 45deg 90deg, #ffff9e 90deg 135deg, #9eff9e 135deg 180deg, #9effff 180deg 225deg, #9eceff 225deg 270deg, #ce9eff 270deg 315deg, #ff9eff 315deg 360deg)";
+            rotate.style.background = "conic-gradient(#FAE9D4 0 45deg, #AD9579 45deg 90deg, #755851 90deg 135deg, #C5D8A4 135deg 180deg, #FAE9D4 180deg 225deg, #AD9579 225deg 270deg, #755851 270deg 315deg, #C5D8A4 315deg 360deg)";
           } else if (value === "2") {
             data= eval('{{ meal["2"] }}'.replaceAll('&#39;', "'"));
-            rotate.style.background = "conic-gradient(#ff9e9e 0 72deg, #ffff9e 72deg 144deg, #9eff9e 144deg 216deg, #9eceff 216deg 288deg, #ff9eff 288deg 360deg)";
+            rotate.style.background = "conic-gradient(#CC5252 0 72deg, #F0D1B6 72deg 144deg, #663333 144deg 216deg, #DEB785 216deg 288deg, #F0D1B6 288deg 360deg)";
           } else {
             data= eval('{{ meal["100"] }}'.replaceAll('&#39;', "'"));
-            rotate.style.background = "conic-gradient(#ff9e9e 0 16.36deg, #ff9ece 16.36deg 32.72deg, #ff9eff 32.72deg 49.08deg, #ce9eff 49.08deg 65.44deg, #9e9eff 65.44deg 81.8deg, #9eceff 81.8deg 98.16deg, #9effff 98.16deg 114.52deg, #9effce 114.52deg 130.88deg, #ceff9e 130.88deg 147.24deg, #ffff9e 147.24deg 163.6deg, #ffce9e 163.6deg 179.96deg, #ff9e9e 179.96deg 196.32deg, #ff9ece 196.32deg 212.68deg, #ff9eff 212.68deg 229.04deg, #ce9eff 229.04deg 245.4deg, #9e9eff 245.4deg 261.76deg, #9eceff 261.76deg 278.12deg, #9effff 278.12deg 294.48deg, #9effce 294.48deg 310.84deg, #ceff9e 310.84deg 327.2deg, #ffff9e 327.2deg 343.56deg, #ffce9e 343.56deg 359.92deg)";
+            rotate.style.background = "conic-gradient(#f6e7e5 0 15.6522deg, #f5f5f5 15.6522deg 31.3043deg, #fefefc 31.3043deg 46.9565deg, #fef7e2 46.9565deg 62.6087deg, #d1dac3 62.6087deg 78.2609deg, #f1e0d1 78.2609deg 93.9130deg, #d1dac3 93.9130deg 109.5652deg, #fef7e2 109.5652deg 125.2174deg, #fefefc 125.2174deg 140.8696deg, #f5f5f5 140.8696deg 156.5217deg, #f6e7e5 156.5217deg 172.1739deg, #f1e0d1 172.1739deg 187.8261deg, #d1dac3 187.8261deg 203.4783deg, #f5f5f5 203.4783deg 219.1304deg, #fefefc 219.1304deg 234.7826deg, #fef7e2 234.7826deg 250.4348deg, #d1dac3 250.4348deg 266.0870deg, #f1e0d1 266.0870deg 281.7391deg, #f6e7e5 281.7391deg 297.3913deg, #f5f5f5 297.3913deg 313.0435deg, #fefefc 313.0435deg 328.6957deg, #fef7e2 328.6957deg 344.3478deg, #d1dac3 344.3478deg 360deg)";
           }
 
           const container = document.querySelector('.rotate');
@@ -85,25 +72,15 @@
                   }
                 })
                 console.log(selectedData)
+                
+                const confirmPopup = confirm(`${selectedData}で確定しますか？`);
+                if (confirmPopup) {
                 const hideSelectedDataEle = document.querySelector('#hide-selected-data')
                 hideSelectedDataEle.value = selectedData
 
                 const resultForm = document.querySelector('#result-form')
                 resultForm.submit()
-                
-                // fetch("/result", {
-                //   method: 'POST',
-                //   headers: {"Content-Type": "application/json; charset=utf-8" },
-                //   body: JSON.stringify({ selectedData: selectedData })
-                // })
-                // .then(response => {
-                //   console.log(response);
-                // })
-                // .catch(error => {
-                //   console.error("Error:", error);
-                // });
-
-
+                }
               }, 50)
             } else {
               animation.classList.remove("paused");
@@ -135,7 +112,5 @@
         }
       }
     </script>
-
-  <a href="{{ url_for('memberpage') }}">マイページ</a>
 </div>
 {% endblock %}

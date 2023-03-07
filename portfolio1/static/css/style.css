@@ -1,6 +1,41 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.form-check-input {
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+}
+
+.form-check-label {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-right: 18px;
+  border-radius: 3px;
+  transition: all .2s;
+  border: 2px solid #7EC2C2;
+}
+
+.form-check-input:checked + .form-check-label {
+  background: #7EC2C2;
+  color: #FFF4E1;
+}
+
+.form-check-input:focus + .form-check-label {
+  outline-color: #E67A7A;
+  outline-offset: -2px;
+  outline-style: auto;
+  outline-width: 5px;
+}
+
 #pointer {
   text-align: center;
-  color: #a9a9a9;
+  color: #7EC2C2;
   font-size: xx-large;
   font-weight: bold;
 }
@@ -24,7 +59,8 @@
   transform-origin: 0 200px;
 }
 .roulette span {
-  font-size: 20px;
+  font-size: 15px;
+  text-shadow: -1px -1px 0 rgba(255,255,255,0.75), 1px -1px 0 rgba(255,255,255,0.75), -1px 1px 0 rgba(255,255,255,0.75), 1px 1px 0 rgba(255,255,255,0.25);
   writing-mode: vertical-rl;
 }
 @keyframes rotate_anime {

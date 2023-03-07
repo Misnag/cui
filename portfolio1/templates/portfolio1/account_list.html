@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>従業員一覧</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">名前</th>
+              <th scope="col">ID</th>
+              <th scope="col">パスワード</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for account in accounts %}
+            <tr>
+              <th scope="row">{{ account.number }}</th>
+              <td>{{ account.name }}</td>
+              <td>{{ account.id }}</td>
+              <td>{{ account.password }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+</div>
+{% endblock %}

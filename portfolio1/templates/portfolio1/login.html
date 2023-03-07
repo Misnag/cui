@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5 mb-5 d-flex justify-content-center">
+	<div class="card px-1 py-4" style="width: 400px;">
+		<div class="card-body">
+			<h6 class="card-title mb-3">Login</h6>
+			<form action="/signup" method="POST">
+				<div class="row mt-2">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<input name="mail" class="form-control" type="text" placeholder="ID"></input>
+						</div>
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<input name="department" class="form-control" type="text" placeholder="パスワード"></input>
+						</div>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col text-center">
+						<button type="submit" class="btn btn-primary">ログイン</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
