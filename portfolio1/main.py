@@ -25,17 +25,14 @@ db_uri = 'sqlite:///login.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text())
     mail = db.Column(db.Text())
-    def __init__(self, name, mail):
-      self.name = name
-      self.mail = mail
-
-db.create_all()
 
 class LoginForm(FlaskForm):
     name = StringField('名前')
@@ -44,7 +41,10 @@ class LoginForm(FlaskForm):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    if user_id == 'None' or user_id is None:
+        redirect('/login')
+    else:
+        return User.query.get(int(user_id))
 
 # トップページを表示
 @app.route('/')
@@ -69,9 +69,19 @@ def member():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.name.data == 'cui' and form.mail.data == 'cui':
-            user = User(form.name.data)
-            login_user(user)
+        username = form.name.data
+        email = form.mail.data
+        if username == 'cui' and email == 'cui':
+            # ログインの場合
+            # user = User.query.filter_by(mail=email).first()
+            # login_user(user)
+
+            # 登録の場合
+            new_user = User(name=username, mail=email)
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+
             return redirect('/member')
         else:
             return 'ログインに失敗しました'
