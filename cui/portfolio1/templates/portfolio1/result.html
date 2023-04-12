@@ -1,0 +1,246 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div id="place-info"></div>
+
+{% if current_user.is_authenticated %}
+  <form method="POST" action="{{ url_for('like') }}" id="like-form">
+    {{ form1.csrf_token }}
+
+    <input type="hidden" id="like-name" name="name">
+    <input type="hidden" id="like-formatted_address" name="formatted_address">
+
+    {{ form1.favorite }}
+  </form>
+
+  <div id="review-message"></div>
+
+  <div class="rating">
+    <input id="star5" type="radio" name="rate" value="5" onclick="updateRating(this)">
+    <label for="star5">★</label>
+    <input id="star4" type="radio" name="rate" value="4" onclick="updateRating(this)">
+    <label for="star4">★</label>
+    <input id="star3" type="radio" name="rate" value="3" onclick="updateRating(this)">
+    <label for="star3">★</label>
+    <input id="star2" type="radio" name="rate" value="2" onclick="updateRating(this)">
+    <label for="star2">★</label>
+    <input id="star1" type="radio" name="rate" value="1" onclick="updateRating(this)">
+    <label for="star1">★</label>
+  </div>
+
+  <div id="comment-display"></div>
+
+  <form method="POST" action="{{ url_for('review') }}" id="review-form">
+    {{ form2.csrf_token }}
+
+    <input type="hidden" id="review-name" name="name">
+    <input type="hidden" id="review-formatted_address" name="formatted_address">
+    <input type="hidden" id="review-rating" name="rating">
+    {{ form2.comment }}
+
+    {{ form2.submit }}
+  </form>
+  
+{% else %}
+  お気に入り、レビュー機能を使用するにはログインしてください
+{% endif %}
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<div class="map-wrapper" style="width: 700px; height: 350px;">
+  <div id="map" style="height: 100%;"></div>
+</div>
+<p>
+  <a href="{{ url_for('index') }}">もう一度</a>
+</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2TZCvCkNVuVp7yhXDEu2TKSPegpQh8y4&callback=initMap&libraries=places&v=weekly" defer></script>
+<script>
+  let map;
+  let service;
+  let infowindow;
+
+  function initMap() {
+    infowindow = new google.maps.InfoWindow();
+
+    let lat, lng
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      lat = pos.coords.latitude
+      lng = pos.coords.longitude
+    })
+    
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat, lng },
+      zoom: 15,
+    });
+
+    const request = {
+      query: "{{ selected_meal }} {{ address }}", 
+      fields: ["name", "geometry", "formatted_address"],
+    };
+  
+    service = new google.maps.places.PlacesService(map);
+    service.findPlaceFromQuery(request, (results, status) => {
+      console.log(results)
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        let placeName = '';
+        let formattedAddress = '';
+        if (results && results[0] && results[0].name && results[0].formatted_address) {
+          placeName = results[0].name;
+          formattedAddress = results[0].formatted_address;
+        }
+        document.getElementById('place-info').innerHTML = `<p><strong>${placeName}</strong><br>${formattedAddress}</p>`;
+        
+        for (let i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+
+        map.setCenter(results[0].geometry.location);
+
+        document.getElementById('like-name').value = placeName;
+        document.getElementById('like-formatted_address').value = formattedAddress;
+        document.getElementById('review-name').value = placeName;
+        document.getElementById('review-formatted_address').value = formattedAddress;
+
+        $(document).ready(function() {
+          $.ajax({
+              url: '/check_like',
+              type: 'POST',
+              data: {
+                  'name': `${placeName}`,
+                  'formatted_address': `${formattedAddress}`
+              },
+              success: function(data) {
+                  const likeExists = data.exists;
+                  const favBtn = document.getElementById("favorite");
+                  const likeForm = document.getElementById("like-form");
+
+                  if (likeExists === "True") {
+                    const like_id = parseInt(data.like_id);
+                    favBtn.value = "♥ お気に入り";
+                    favBtn.style.color = "#E67A7A";
+                    favBtn.disabled = true;
+                  }
+                }
+            });
+        });
+        $(document).ready(function() {
+          $.ajax({
+              url: '/check_review',
+              type: 'POST',
+              data: {
+                  'name': `${placeName}`,
+                  'formatted_address': `${formattedAddress}`
+              },
+              success: function(data) {
+                const reviewExists = data.exists;
+                const reviewForm = document.getElementById("review-form");
+                const messageElement = document.getElementById("review-message");
+                const ratingInputs = $('input[name="rate"]');
+
+                if (reviewExists === "True") {
+                  const review_id = parseInt(data.review_id);
+                  const rating = parseInt(data.rating);
+                  const comment = data.comment;
+                  ratingInputs.prop('disabled', true);
+                  $('input[name=rate][value=' + rating + ']').prop('checked', true);
+                  $('#comment').val(comment);
+                  messageElement.innerHTML = "⚠既にレビューが投稿されています。編集はアカウント画面で行うことができます。";
+                  reviewForm.comment.style.display = "none"; 
+                  reviewForm.submit.style.display = "none"; 
+                  commentDisplay.innerHTML = comment;
+                } else {
+                  // Clear message if review does not exist
+                  messageElement.innerHTML = "";
+                }
+              }
+            });
+          });
+        }
+      });
+    }
+
+  function createMarker(place) {
+    if (!place.geometry || !place.geometry.location) return;
+
+    const marker = new google.maps.Marker({
+      map,
+      position: place.geometry.location,
+    });
+
+    const info = `<div><strong>${place.name}</strong><br>${place.formatted_address}<br>`;
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+    const infoWithLink = info + `<a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank">ルートを表示</a></div>`;
+
+    infowindow.setContent(infoWithLink);
+    infowindow.open(map, marker);
+  }
+  
+  window.initMap = initMap;
+
+</script>
+
+<script>
+  favBtn.addEventListener("click", function(event) {
+    event.preventDefault();
+    const currentValue = favBtn.value;
+    const formData = $(likeForm).serialize();
+    if (currentValue === "♡ お気に入り") {
+        $.ajax({
+            url: "{{url_for('like')}}",
+            type: "POST",
+            data: formData,
+            success: function(response){
+                console.log(response);
+                favBtn.value = "♥ お気に入り";
+                favBtn.style.color = "#E67A7A";
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.log(errorThrown);
+            }
+        });
+      } else {
+        favBtn.value = "♡ お気に入り";
+        favBtn.style.color = "#000";
+      }
+    });
+
+
+const reviewForm = document.getElementById("review-form");
+const reviewIdInput = document.getElementById("review-id");
+
+reviewForm.addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent the default form submission
+    const formData = $(reviewForm).serialize();
+    $.ajax({
+      url: "{{ url_for('review') }}",
+      type: "POST",
+      data: formData,
+      success: function(response) {
+        console.log(response);
+        // handle success response
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        // handle error response
+      }
+    });
+  });
+
+  const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
+  const ratingInputHidden = document.querySelector('#rating');
+
+  function updateRating(elem) {
+    document.getElementById("review-rating").value = elem.value;
+  }
+  ratingInputs.forEach(ratingInput => {
+    ratingInput.addEventListener('change', event => {
+      ratingInputHidden.value = event.target.value;
+    });
+  });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,131 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+
+
+.form-check-input {
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+}
+
+.form-check-label, #start, #review-form input[type="submit"] {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-right: 18px;
+  border-radius: 3px;
+  transition: all .2s;
+  border: 2px solid #7EC2C2;
+}
+
+.form-check-input:checked + .form-check-label {
+  background: #7EC2C2;
+  color: #FFF4E1;
+}
+
+.form-check-input:focus + .form-check-label {
+  outline-color: #E67A7A;
+  outline-offset: -2px;
+  outline-style: auto;
+  outline-width: 5px;
+}
+
+#pointer {
+  text-align: center;
+  color: #7EC2C2;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+.rotate {
+  height: 400px;
+  width: 400px;
+  margin: 0 auto;
+  border-radius: 50%;
+  animation: rotate_anime 0.5s linear infinite;
+}
+
+
+.roulette{
+  height: 100%;
+  left: 50%;
+  text-align: center;
+  font-size: 1.5rem;
+  display: inline-block;
+  position: absolute;
+  transform-origin: 0 200px;
+}
+.roulette span {
+  font-size: 15px;
+  text-shadow: -1px -1px 0 rgba(255,255,255,0.75), 1px -1px 0 rgba(255,255,255,0.75), -1px 1px 0 rgba(255,255,255,0.75), 1px 1px 0 rgba(255,255,255,0.25);
+  writing-mode: vertical-rl;
+}
+@keyframes rotate_anime {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.paused {
+  animation-play-state: paused;
+}
+
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+.rating input[type=radio] {
+  display: none;
+}
+.rating label {
+  position: relative;
+  padding: 0 5px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 20px;
+}
+.rating label:hover {
+  color: gold;
+}
+.rating label:hover ~ label {
+  color: gold;
+}
+.rating input[type=radio]:checked ~ label {
+  color: gold;
+}
+
+.fa-star {
+  color: #ccc;
+}
+
+.fa-star.checked {
+  color: gold;
+}
+
+ul, ol {
+  border-top: solid #1e366a 1px;/*上のボーダー*/
+  border-bottom: solid #1e366a 1px;/*下のボーダー*/
+  padding: 0.5em 0 0.5em 1.5em;
+}
+
+ul li, ol li {
+  line-height: 1.5;
+  padding: 0.5em 0;
+}
+
+.edit-form{
+  display: none
+}
+
+.edit-form.show {
+  display: block;
+}
