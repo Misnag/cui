@@ -151,7 +151,6 @@
                   reviewForm.submit.style.display = "none"; 
                   commentDisplay.innerHTML = comment;
                 } else {
-                  // Clear message if review does not exist
                   messageElement.innerHTML = "";
                 }
               }
@@ -212,7 +211,7 @@ const reviewForm = document.getElementById("review-form");
 const reviewIdInput = document.getElementById("review-id");
 
 reviewForm.addEventListener("submit", function(event) {
-  event.preventDefault(); // Prevent the default form submission
+  event.preventDefault(); 
     const formData = $(reviewForm).serialize();
     $.ajax({
       url: "{{ url_for('review') }}",
@@ -220,11 +219,9 @@ reviewForm.addEventListener("submit", function(event) {
       data: formData,
       success: function(response) {
         console.log(response);
-        // handle success response
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(errorThrown);
-        // handle error response
       }
     });
   });

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h1>Sign Up</h1>
+<h1>新規登録</h1>
     <p>
 		<form method="POST" action="{{url_for('signup')}}">
 			{{ signup.csrf_token }}
