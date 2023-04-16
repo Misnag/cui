@@ -7,12 +7,14 @@ fieldset {
   text-align: center;
 }
 
+
+
 .form-check-input {
   clip: rect(1px, 1px, 1px, 1px);
   position: absolute !important;
 }
 
-.form-check-label {
+.form-check-label, #start, #review-form input[type="submit"] {
   display: inline-block;
   padding: 0.5rem 1rem;
   margin-right: 18px;
@@ -74,4 +76,56 @@ fieldset {
 
 .paused {
   animation-play-state: paused;
+}
+
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+.rating input[type=radio] {
+  display: none;
+}
+.rating label {
+  position: relative;
+  padding: 0 5px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 20px;
+}
+.rating label:hover {
+  color: gold;
+}
+.rating label:hover ~ label {
+  color: gold;
+}
+.rating input[type=radio]:checked ~ label {
+  color: gold;
+}
+
+.fa-star {
+  color: #ccc;
+}
+
+.fa-star.checked {
+  color: gold;
+}
+
+ul, ol {
+  border-top: solid #ccc 1px;
+  border-bottom: solid #ccc 1px;
+  padding: 0.5em 0 0.5em 1.5em;
+}
+
+ul li, ol li {
+  line-height: 1.5;
+  padding: 0.5em 0;
+}
+
+.edit-form{
+  display: none
+}
+
+.edit-form.show {
+  display: block;
 }

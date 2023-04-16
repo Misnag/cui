@@ -1,38 +1,22 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<div class="container mt-5 mb-5 d-flex justify-content-center">
-	<div class="card px-1 py-4" style="width: 400px;">
-		<div class="card-body">
-			<h6 class="card-title mb-3">Sing Up</h6>
-			<form action="/signup" method="POST">
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="form-group">
-							<input name="name" class="form-control" type="text" placeholder="名前いらないかも"></input>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-2">
-					<div class="col-sm-12">
-						<div class="form-group">
-							<input name="id" class="form-control" type="text" placeholder="ID"></input>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-2">
-					<div class="col-sm-12">
-						<div class="form-group">
-							<input name="password" class="form-control" type="text" placeholder="パスワード"></input>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-3">
-					<div class="col text-center">
-						<button type="submit" class="btn btn-primary">アカウント作成</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+<h1>新規登録</h1>
+    <p>
+		<form method="POST" action="{{url_for('signup')}}">
+			{{ signup.csrf_token }}
+	
+			{{ signup.accountid.label }}:{{ signup.accountid }} <br>
+			{% for error in signup.accountid.errors %}
+			<span style="color: red;">{{ error }}</span>
+			{% endfor %}<br>
+	
+			{{ signup.password.label }}:{{ signup.password }}<br>
+			{% for error in signup.password.errors %}
+			<span style="color: red;">{{ error }}</span>
+			{% endfor %}<br>
+	
+			{{ signup.submit}}
+		</form>
+	</p>			
 {% endblock %}
