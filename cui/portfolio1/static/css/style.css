@@ -112,8 +112,8 @@ fieldset {
 }
 
 ul, ol {
-  border-top: solid #1e366a 1px;/*上のボーダー*/
-  border-bottom: solid #1e366a 1px;/*下のボーダー*/
+  border-top: solid #ccc 1px;
+  border-bottom: solid #ccc 1px;
   padding: 0.5em 0 0.5em 1.5em;
 }
 

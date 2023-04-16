@@ -171,7 +171,6 @@ def review():
         db.session.commit()
         return redirect(url_for('detail', name=review.name, formatted_address=review.formatted_address))
 
-    # pre-populate form fields
     form2.name.data = review.name
     form2.formatted_address.data = review.formatted_address
     form2.rating.data = str(review.rating) if review.rating else ''
