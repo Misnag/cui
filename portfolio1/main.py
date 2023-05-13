@@ -197,7 +197,7 @@ def edit_review(review_id):
         form2.comment.data = review.comment
         form2.date_posted.data = review.date_posted 
     
-    return render_template('portfolio1/edit.html', form2=form2, review=review, review_id=review_id)
+    return render_template('portfolio1/account.html', form2=form2, review=review, review_id=review_id)
 
 # 削除機能
 @app.route('/review/<int:review_id>/delete', methods=['POST'])
