@@ -3,12 +3,15 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <h2>{{ current_user.accountid }}さん</h2>
+
+<!-- db内に保存されたレビューを一覧表示 -->
 レビュー
 <p>
   {% if reviews %}
     <ul>
       {% for review in reviews %}
   <li>
+    <!-- レビュー一覧にある店の名前をクリックすると、結果表示ページに飛ぶ -->
     <strong>
       <form action="{{ url_for('detail') }}" method="POST">
         <input type="hidden" name="name" value="{{ review.name }}">
@@ -17,12 +20,14 @@
       </form>
     </strong>
     {{ review.formatted_address }} <br>
+      <!-- レビュー削除-->
       <div>
         <form action="{{ url_for('delete_review', review_id=review.id) }}" method="post">
           <button type="submit" onclick="return confirm('一度消したレビューは戻せません。本当に消去しますか？')">Delete</button>
         </form>
       </div>
-      <button type="button" class="edit-button" data-review-id="{{ review.id }}">Edit</button>
+      <!-- レビュー編集フォーム -->
+      <button type="button" class="edit-button" data-review-id="{{ review.id }}">編集</button>
       <nav class="nav">
       <div class="edit-form" id="edit-form-{{ review.id }}" >
         <div class="rating">
@@ -50,6 +55,7 @@
         </form>
         </nav>
       </div>
+    <!-- レビューのrating(★)の値の数より小さい値の★をすべてcheckedにしてcssで色を変える -->
     {% for i in range(1, 6) %}
       {% if review.rating is not none and i <= review.rating|safe|int %}
         <span class="fa fa-star checked"></span>
@@ -66,12 +72,15 @@
     <p>No reviews found.</p>
   {% endif %}
 </p>
+
+<!-- db内に保存されたお気に入りを一覧表示 -->
 お気に入り
 <p>
   {% if likes %}
     <ul>
       {% for like in likes %}
         <li>
+          <!-- お気に入り一覧にある店の名前をクリックすると、結果表示ページに飛ぶ -->
           <strong>
             <form action="{{ url_for('detail') }}" method="POST">
               <input type="hidden" name="name" value="{{ like.name }}">
@@ -80,8 +89,9 @@
             </form>
           </strong>
           {% if like.user_id == current_user.id %} 
+            <!-- お気に入り削除 -->
             <form action="{{ url_for('delete_like', like_id=like.id) }}" method="post">
-              <button type="submit" onclick="return confirm('本当に消去しますか？')">Delete</button>
+              <button type="submit" onclick="return confirm('本当に消去しますか？')">削除</button>
             </form>
           {% endif %}
           {{ like.formatted_address }} <br>
@@ -94,16 +104,20 @@
 </p>
 <a href="{{ url_for('index') }}">お店を探す</a>
 
+
+
 <script src="https://code.jquery.com/jquery.min.js"></script>
 <script>
-$(function() {
-  $(".edit-button").click(function() {
-    var reviewId = $(this).data("review-id");
-    $("#edit-form-" + reviewId).slideToggle("");
+  // クリックで編集フォーム表示
+  $(function() {
+    $(".edit-button").click(function() {
+      var reviewId = $(this).data("review-id");
+      $("#edit-form-" + reviewId).slideToggle("");
+    });
   });
-});
 
-const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
+  // 編集フォームに入力された★の値を更新
+  const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
   const ratingInputHidden = document.querySelector('#rating');
 
   function updateRating(elem) {

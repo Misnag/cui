@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
+  <!-- チェックボックスで４種類のルーレットを切り替え -->
   <div style="text-align:center;">食べたい料理のジャンルと場所を入力してルーレットを回し、ランダムに飲食店を決めよう！</div>
   <br>
   <fieldset>
@@ -15,6 +16,7 @@
       <label class="form-check-label" for="2">中華</label>
   </fieldset>
 
+  <!-- 場所入力フォーム(位置情報の取得許可で空白でも可) -->
   <form action="/result" method="POST" id="result-form" style="text-align:center;">
     <input type="text" id="address" name="address" placeholder="場所を入力してください">
     <input type="hidden" name="selected-data" id="hide-selected-data">
@@ -27,6 +29,7 @@
   <div class="rotate paused" id="rotate"></div>
 
   <script>
+    // 表示するルーレットの項目を取得し、項目ごとに背景の色を割り振る
     const formCheckInputs = document.querySelectorAll('.form-check-input');
     formCheckInputs.forEach(function (formCheckInput) {
       formCheckInput.addEventListener('change', function () {
@@ -47,6 +50,7 @@
           rotate.style.background = "conic-gradient(#f6e7e5 0 15.6522deg, #f5f5f5 15.6522deg 31.3043deg, #fefefc 31.3043deg 46.9565deg, #fef7e2 46.9565deg 62.6087deg, #d1dac3 62.6087deg 78.2609deg, #f1e0d1 78.2609deg 93.9130deg, #d1dac3 93.9130deg 109.5652deg, #fef7e2 109.5652deg 125.2174deg, #fefefc 125.2174deg 140.8696deg, #f5f5f5 140.8696deg 156.5217deg, #f6e7e5 156.5217deg 172.1739deg, #f1e0d1 172.1739deg 187.8261deg, #d1dac3 187.8261deg 203.4783deg, #f5f5f5 203.4783deg 219.1304deg, #fefefc 219.1304deg 234.7826deg, #fef7e2 234.7826deg 250.4348deg, #d1dac3 250.4348deg 266.0870deg, #f1e0d1 266.0870deg 281.7391deg, #f6e7e5 281.7391deg 297.3913deg, #f5f5f5 297.3913deg 313.0435deg, #fefefc 313.0435deg 328.6957deg, #fef7e2 328.6957deg 344.3478deg, #d1dac3 344.3478deg 360deg)";
         }
 
+        // 表示するルーレットの項目ごとの文字にidを割り振り、文字を表示させる
         const container = document.querySelector('.rotate');
         let html = '';
         data.forEach((item, index) => {
@@ -55,6 +59,7 @@
         });
         container.innerHTML = html;
 
+        // ルーレットを回転、停止させる。停止されたときの回転角度から、ルーレットの項目の文字を特定
         const animation = document.querySelector(".rotate");
         const start = document.getElementById("start");
         start.onclick = () => {
@@ -85,12 +90,14 @@
               resultForm.submit()
               }
             }, 50)
+          // ルーレットを再び回転させる
           } else {
             animation.classList.remove("paused");
             start.value = "Stop";
           }
         };
 
+        // 辞書のvalueの数から、それぞれの文字を回転させて表示
         data.forEach((item, index) => {
           let itemAngle = 360 - (index * 360 / data.length + (360 / data.length / 2))
           let rouletteEle = document.getElementById(`roulette${(index + 1)}`)
@@ -101,6 +108,7 @@
       });
       
     });
+    // 回転角度を取得する
     var getRotate = function(el) {
       var tm = getComputedStyle(el, null).getPropertyValue("transform")
       if (tm != "none") {

@@ -151,7 +151,7 @@ def like():
         return jsonify({'success': True})
     return jsonify({'success': False, 'errors': form.errors})
 
-
+# 削除機能
 @app.route('/like/<int:like_id>/delete', methods=['POST'])
 @login_required
 def delete_like(like_id):
@@ -178,6 +178,7 @@ def review():
 
     return render_template('portfolio1/account.html', form2=form2)
 
+# dbのレビュー内容を変更
 @app.route('/review/edit/<int:review_id>', methods=['GET','POST'])
 @login_required
 def edit_review(review_id):
@@ -198,7 +199,7 @@ def edit_review(review_id):
     
     return render_template('portfolio1/edit.html', form2=form2, review=review, review_id=review_id)
 
-
+# 削除機能
 @app.route('/review/<int:review_id>/delete', methods=['POST'])
 @login_required
 def delete_review(review_id):
@@ -208,7 +209,7 @@ def delete_review(review_id):
     flash('Your review has been deleted.', 'success')
     return redirect(url_for('account'))
 
-
+# レビュー、お気に入り一覧にある店の名前をクリックすると、結果表示ページに飛ぶ
 @app.route('/detail', methods=['POST'])
 def detail():
     selected_meal = request.form.get('name')
@@ -217,6 +218,8 @@ def detail():
     form2 = ReviewForm()
     return render_template('portfolio1/result.html', selected_meal=selected_meal, address=address, form1=form1, form2=form2)
 
+
+# 既に存在するレビュー、お気に入りのデータがdbにあるかAjax,JSONで確認
 @app.route('/check_like', methods=['POST'])
 def check_like():
     name = request.form.get('name')

@@ -4,6 +4,7 @@
 <div id="place-info"></div>
 
 {% if current_user.is_authenticated %}
+  <!-- ログインしている場合、お気に入り登録ボタンを表示 -->
   <form method="POST" action="{{ url_for('like') }}" id="like-form">
     {{ form1.csrf_token }}
 
@@ -13,8 +14,8 @@
     {{ form1.favorite }}
   </form>
 
+  <!-- ログインしている場合、レビュー登録フォームを表示 -->
   <div id="review-message"></div>
-
   <div class="rating">
     <input id="star5" type="radio" name="rate" value="5" onclick="updateRating(this)">
     <label for="star5">★</label>
@@ -29,7 +30,7 @@
   </div>
 
   <div id="comment-display"></div>
-
+  
   <form method="POST" action="{{ url_for('review') }}" id="review-form">
     {{ form2.csrf_token }}
 
@@ -45,6 +46,8 @@
   お気に入り、レビュー機能を使用するにはログインしてください
 {% endif %}
 
+
+<!-- マップを表示 -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <div class="map-wrapper" style="width: 700px; height: 350px;">
   <div id="map" style="height: 100%;"></div>
@@ -55,7 +58,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=APIきー=places&v=weekly" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2TZCvCkNVuVp7yhXDEu2TKSPegpQh8y4&callback=initMap&libraries=places&v=weekly" defer></script>
 <script>
   let map;
   let service;
@@ -75,6 +78,7 @@
       zoom: 15,
     });
 
+    // 食事の種類と住所から、飲食店名、緯度経度、住所を取得
     const request = {
       query: "{{ selected_meal }} {{ address }}", 
       fields: ["name", "geometry", "formatted_address"],
@@ -98,11 +102,13 @@
 
         map.setCenter(results[0].geometry.location);
 
+        // 飲食店名と住所を表示
         document.getElementById('like-name').value = placeName;
         document.getElementById('like-formatted_address').value = formattedAddress;
         document.getElementById('review-name').value = placeName;
         document.getElementById('review-formatted_address').value = formattedAddress;
 
+        // 既にお気に入り登録しているかチェック、登録済みの場合お気に入り登録ボタンの表示を変える
         $(document).ready(function() {
           $.ajax({
               url: '/check_like',
@@ -125,6 +131,8 @@
                 }
             });
         });
+
+        // 既にレビューを登録しているかチェック、登録済みの場合レビュー内容を表示
         $(document).ready(function() {
           $.ajax({
               url: '/check_review',
@@ -160,6 +168,7 @@
       });
     }
 
+  // マップ内にピンを立てる
   function createMarker(place) {
     if (!place.geometry || !place.geometry.location) return;
 
@@ -168,6 +177,7 @@
       position: place.geometry.location,
     });
 
+    // ピンを立てた場所の情報ウインドウに、飲食店名、住所、現在地からのルート案内リンクを表示
     const info = `<div><strong>${place.name}</strong><br>${place.formatted_address}<br>`;
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
@@ -182,34 +192,34 @@
 </script>
 
 <script>
-  favBtn.addEventListener("click", function(event) {
-    event.preventDefault();
-    const currentValue = favBtn.value;
-    const formData = $(likeForm).serialize();
-    if (currentValue === "♡ お気に入り") {
-        $.ajax({
-            url: "{{url_for('like')}}",
-            type: "POST",
-            data: formData,
-            success: function(response){
-                console.log(response);
-                favBtn.value = "♥ お気に入り";
-                favBtn.style.color = "#E67A7A";
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                console.log(errorThrown);
-            }
-        });
-      } else {
-        favBtn.value = "♡ お気に入り";
-        favBtn.style.color = "#000";
-      }
-    });
+// お気に入り登録ボタンをクリックすると、非同期でdbに保存し、ボタンの表示を変える
+favBtn.addEventListener("click", function(event) {
+  event.preventDefault();
+  const currentValue = favBtn.value;
+  const formData = $(likeForm).serialize();
+  if (currentValue === "♡ お気に入り") {
+      $.ajax({
+          url: "{{url_for('like')}}",
+          type: "POST",
+          data: formData,
+          success: function(response){
+              console.log(response);
+              favBtn.value = "♥ お気に入り";
+              favBtn.style.color = "#E67A7A";
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+              console.log(errorThrown);
+          }
+      });
+    } else {
+      favBtn.value = "♡ お気に入り";
+      favBtn.style.color = "#000";
+    }
+  });
 
-
+// レビューフォームに入力された内容を非同期でdbに保存
 const reviewForm = document.getElementById("review-form");
 const reviewIdInput = document.getElementById("review-id");
-
 reviewForm.addEventListener("submit", function(event) {
   event.preventDefault(); 
     const formData = $(reviewForm).serialize();
@@ -226,9 +236,9 @@ reviewForm.addEventListener("submit", function(event) {
     });
   });
 
+  //レビューのrating(★)の値の数より小さい値の★の色を変える
   const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
   const ratingInputHidden = document.querySelector('#rating');
-
   function updateRating(elem) {
     document.getElementById("review-rating").value = elem.value;
   }
